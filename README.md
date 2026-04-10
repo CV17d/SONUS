@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# SONUS - Experiencia Musical Inmersiva 💎🎧
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Sonus** no es solo un reproductor de música; es un santuario digital diseñado para la escucha consciente. Construido con una arquitectura de vanguardia y un sistema de diseño propio, Sonus transforma cada pista en una experiencia sensorial profunda.
 
-Currently, two official plugins are available:
+![Sonus Preview](https://github.com/CV17d/SONUS/raw/main/public/preview.png) *(Nota: Imagen de previsualización pendiente de añadir)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Características Destacadas
 
-## React Compiler
+### 🌌 Sistema de Diseño "Sonic Etherealism"
+Inspirado por la aurora digital, nuestro sistema de diseño rompe con las interfaces tradicionales:
+- **Regla No-Line**: Cero bordes sólidos. La estructura se define por profundidad tonal y capas de luz.
+- **Glassmorphism Maestro**: Paneles de cristal con desenfoques de hasta 32px que permiten que la energía del color fluya a través de la interfaz.
+- **Tipografía Editorial**: Una combinación sofisticada de *Plus Jakarta Sans* (para impacto) y *Manrope* (para legibilidad) con kerning ajustado.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🧘 Modo Zen (Enfoque Total)
+Un entorno purificado de distracciones. Al activar el Modo Zen (tecla `Z`), la interfaz secundaria se desvanece, dejando el escenario principal dedicado exclusivamente al arte del disco, los controles esenciales y la lírica.
 
-## Expanding the ESLint configuration
+### ⚡ Energía en Tiempo Real
+El fondo dinámico inteligente utiliza el `AnalyserNode` de la Web Audio API para monitorizar las frecuencias bajas. El ambiente de la aplicación vibra y late físicamente en sincronía con los bajos de la música.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🔍 Autocover & Lyrics Inteligentes
+Sonus se encarga de que tu colección siempre luzca perfecta:
+- **iTunes Cover Engine**: Búsqueda automática y recuperación de carátulas en alta resolución (600x600px).
+- **Lyrics View**: Visualizador de letras integrado para una conexión narrativa total con el artista.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠️ Stack Tecnológico
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Frontend**: React 18 + TypeScript.
+- **Herramienta de Construcción**: Vite (Velocidad de desarrollo instantánea).
+- **Animaciones**: Framer Motion (Efectos líquidos, transiciones de entrada/salida y gestos).
+- **Motor de Audio**: 
+  - Gestión mediante **DLL (Lista Doblemente Enlazada)** para una navegación de pistas robusta.
+  - Algoritmo de **Crossfade** integrado para transiciones suaves entre canciones.
+- **Almacenamiento**: Persistencia robusta en el navegador utilizando **IndexedDB**.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ⌨️ Atajos de Teclado
+- `Espacio`: Play / Pause.
+- `Flecha Derecha / Izquierda`: Salto rápido de +/- 10 segundos.
+- `Z`: Alternar Modo Zen / Enfoque.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 Guía de Inicio
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Requisitos Previos
+- Node.js (v16 o superior)
+- npm o yarn
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Instalación
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/CV17d/SONUS.git
+   ```
+2. Entra en el directorio:
+   ```bash
+   cd sonus
+   ```
+3. Instala las dependencias:
+   ```bash
+   npm install
+   ```
+4. Lanza la aplicación:
+   ```bash
+   npm run dev
+   ```
+
+---
+Desarrollado con pasión para elevar el estándar de la reproducción musical web. 💿✨
