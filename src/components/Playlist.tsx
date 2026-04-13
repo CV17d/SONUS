@@ -105,7 +105,13 @@ export const Playlist: React.FC<PlaylistProps> = ({
           title="Añadir más música"
         >
           <Plus size={24} />
-          <input type="file" accept="audio/*" multiple onChange={handleFileChange} style={{ display: 'none' }} />
+          <input 
+            type="file" 
+            accept="audio/mpeg, audio/wav, audio/ogg, audio/mp3, .mp3, .wav, .ogg" 
+            multiple 
+            onChange={handleFileChange} 
+            style={{ display: 'none' }} 
+          />
         </label>
       </div>
 
