@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Edit3, Music, Trash2, X, Search } from 'lucide-react';
+import { Plus, Edit3, Music, Trash2, X, Search, SlidersHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { PlaylistMetadata } from '../logic/storage';
 
@@ -12,6 +12,7 @@ interface SidebarProps {
   onDelete: (id: string) => void;
   isOpen?: boolean;
   onClose?: () => void;
+  onOpenEq: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -22,7 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onEdit,
   onDelete,
   isOpen = true,
-  onClose
+  onClose,
+  onOpenEq
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
@@ -53,6 +55,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         left: 0
       }}
     >
+      <h1 style={{ 
+        fontSize: '2.5rem', 
+        fontWeight: 800, 
+        letterSpacing: '-3px',
+        background: 'var(--gradient-main)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        marginBottom: '1.5rem',
+        marginTop: '-0.5rem',
+        textAlign: 'center'
+      }}>
+        SONUS
+      </h1>
+
       <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
         <input 
           type="text"
@@ -224,6 +240,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Ecualizador Option at Bottom */}
+      <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <button 
+          onClick={onOpenEq}
+          className="btn-icon"
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem',
+            padding: '1rem',
+            borderRadius: 'var(--radius-md)',
+            background: 'var(--surface-container-low)',
+            color: 'var(--on-surface)',
+            justifyContent: 'center',
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            letterSpacing: '1px',
+            textTransform: 'uppercase'
+          }}
+        >
+          <SlidersHorizontal size={20} color="var(--primary)" />
+          Ecualizador
+        </button>
       </div>
     </motion.aside>
   );

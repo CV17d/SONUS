@@ -76,9 +76,15 @@ interface LyricsViewProps {
   song: Song;
   currentTime: number;
   onClose: () => void;
+  variant?: 'fullscreen' | 'side';
 }
 
-export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClose }) => {
+export const LyricsView: React.FC<LyricsViewProps> = ({ 
+  song, 
+  currentTime, 
+  onClose,
+  variant = 'fullscreen'
+}) => {
   const [lyrics, setLyrics] = useState<string | null>(song.lyrics || null);
   const [syncedLines, setSyncedLines] = useState<SyncedLine[]>([]);
   const [isLoading, setIsLoading] = useState(!song.lyrics);
@@ -89,7 +95,6 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
     const loadLyrics = async () => {
       if (song.lyrics) {
         setLyrics(song.lyrics);
-        // Intentar parsear si parecen sincronizadas
         if (song.lyrics.includes('[')) {
           setSyncedLines(parseLRC(song.lyrics));
         }
@@ -112,7 +117,6 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
     loadLyrics();
   }, [song]);
 
-  // Auto-scroll a la línea activa
   useEffect(() => {
     if (activeLineRef.current && scrollContainerRef.current) {
       activeLineRef.current.scrollIntoView({
@@ -127,91 +131,103 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
     return currentTime >= line.time && (!nextLine || currentTime < nextLine.time);
   });
 
+  const isSide = variant === 'side';
+
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0, x: isSide ? 50 : 0 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: isSide ? 50 : 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'var(--background)',
-        zIndex: 500,
+        position: isSide ? 'relative' : 'fixed',
+        inset: isSide ? 'auto' : 0,
+        backgroundColor: isSide ? 'transparent' : 'var(--background)',
+        zIndex: isSide ? 10 : 500,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        transition: 'var(--theme-transition)'
+        width: isSide ? '400px' : '100%',
+        height: isSide ? '450px' : '100%',
+        transition: 'var(--theme-transition)',
+        borderLeft: isSide ? '1px solid rgba(255,255,255,0.05)' : 'none'
       }}
     >
-      <AuroraBackground />
-      {/* Fondo Aurora Dinámico (mantenemos el anterior como base sólida si se desea) */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: `radial-gradient(circle at 50% 50%, var(--primary), transparent 70%)`,
-        opacity: 0.15,
-        filter: 'blur(100px)',
-        zIndex: 0
-      }} />
+      {!isSide && <AuroraBackground />}
+      
+      {!isSide && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: `radial-gradient(circle at 50% 50%, var(--primary), transparent 70%)`,
+          opacity: 0.15,
+          filter: 'blur(100px)',
+          zIndex: 0
+        }} />
+      )}
 
-      {/* Header */}
-      <div style={{ 
-        padding: '2rem 3rem', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        zIndex: 10,
-        background: 'linear-gradient(to bottom, var(--background), transparent)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{ width: '64px', height: '64px', borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
-             {song.coverUrl ? (
-               <img src={song.coverUrl} alt={song.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-             ) : (
-               <div style={{ width: '100%', height: '100%', background: 'var(--gradient-main)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                 <Music color="white" />
-               </div>
-             )}
+      {/* Header - Solo en modo Fullscreen */}
+      {!isSide && (
+        <div style={{ 
+          padding: '2rem 3rem', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          zIndex: 10,
+          background: 'linear-gradient(to bottom, var(--background), transparent)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
+               {song.coverUrl ? (
+                 <img src={song.coverUrl} alt={song.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+               ) : (
+                 <div style={{ width: '100%', height: '100%', background: 'var(--gradient-main)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                   <Music color="white" />
+                 </div>
+               )}
+            </div>
+            <div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--font-display)' }}>{song.title}</h2>
+              <p style={{ color: 'var(--on-surface-variant)', fontSize: '0.9rem', fontWeight: 600 }}>{song.artist}</p>
+            </div>
           </div>
-          <div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, fontFamily: 'var(--font-display)' }}>{song.title}</h2>
-            <p style={{ color: 'var(--on-surface-variant)', fontSize: '0.9rem', fontWeight: 600 }}>{song.artist}</p>
-          </div>
+          <button onClick={onClose} className="btn-icon" style={{ padding: '1rem' }}>
+            <X size={32} />
+          </button>
         </div>
-        <button onClick={onClose} className="btn-icon" style={{ padding: '1rem' }}>
-          <X size={32} />
-        </button>
-      </div>
+      )}
 
       {/* Contenido de Letras */}
       <div 
         ref={scrollContainerRef}
+        className="lyrics-scroll-container"
         style={{ 
           flex: 1, 
           overflowY: 'auto', 
-          padding: '4rem 2rem 10rem',
+          padding: isSide ? '2rem 1.5rem' : '4rem 2rem 10rem',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
-          gap: '2rem',
+          alignItems: isSide ? 'flex-start' : 'center',
+          gap: isSide ? '1.5rem' : '2rem',
           zIndex: 5,
-          scrollPaddingTop: '20vh'
+          scrollPaddingTop: isSide ? '10vh' : '20vh',
+          maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)'
         }}
       >
         {isLoading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '10vh' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%', marginTop: isSide ? '2rem' : '10vh' }}>
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
               style={{ color: 'var(--primary)' }}
             >
-              <Music size={48} />
+              <Music size={isSide ? 32 : 48} />
             </motion.div>
-            <p style={{ fontWeight: 800, color: 'var(--on-surface-variant)', letterSpacing: '2px' }}>BUSCANDO LETRAS...</p>
           </div>
         ) : !lyrics ? (
-          <div style={{ textAlign: 'center', marginTop: '10vh' }}>
-            <p style={{ fontSize: '2rem', fontWeight: 800, opacity: 0.3, fontFamily: 'var(--font-display)' }}>No se encontraron letras</p>
+          <div style={{ textAlign: 'center', width: '100%', marginTop: isSide ? '2rem' : '10vh' }}>
+            <p style={{ fontSize: isSide ? '1.2rem' : '2rem', fontWeight: 800, opacity: 0.3, fontFamily: 'var(--font-display)' }}>No se encontraron letras</p>
           </div>
         ) : syncedLines.length > 0 ? (
           syncedLines.map((line, index) => (
@@ -219,16 +235,18 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
               key={index}
               ref={index === currentLineIndex ? activeLineRef : null}
               style={{
-                fontSize: window.innerWidth < 768 ? '1.5rem' : '2.5rem',
-                fontWeight: index === currentLineIndex ? 800 : 600,
-                textAlign: 'center',
+                fontSize: isSide ? '1.35rem' : (window.innerWidth < 768 ? '1.5rem' : '2.5rem'),
+                lineHeight: 1.3,
+                fontWeight: index === currentLineIndex ? 800 : 700,
+                textAlign: isSide ? 'left' : 'center',
                 color: index === currentLineIndex ? 'var(--on-surface)' : 'var(--on-surface-variant)',
-                opacity: index === currentLineIndex ? 1 : 0.4,
+                opacity: index === currentLineIndex ? 1 : 0.3,
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: index === currentLineIndex ? 'scale(1.1)' : 'scale(1)',
+                transform: index === currentLineIndex ? 'scale(1.05)' : 'scale(1)',
                 fontFamily: 'var(--font-display)',
-                maxWidth: '800px',
-                padding: '0.5rem 0'
+                maxWidth: isSide ? '100%' : '800px',
+                padding: '0.2rem 0',
+                cursor: 'pointer'
               }}
             >
               {line.text}
@@ -237,12 +255,12 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
         ) : (
           <div style={{ 
             whiteSpace: 'pre-wrap', 
-            textAlign: 'center', 
-            fontSize: '1.75rem', 
+            textAlign: isSide ? 'left' : 'center', 
+            fontSize: isSide ? '1.1rem' : '1.75rem', 
             fontWeight: 600, 
             color: 'var(--on-surface)',
             opacity: 0.8,
-            maxWidth: '800px',
+            maxWidth: isSide ? '100%' : '800px',
             lineHeight: 1.6
           }}>
             {lyrics}
@@ -250,17 +268,19 @@ export const LyricsView: React.FC<LyricsViewProps> = ({ song, currentTime, onClo
         )}
       </div>
 
-      {/* Footer Gradient Over */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '20vh',
-        background: 'linear-gradient(to top, var(--background), transparent)',
-        pointerEvents: 'none',
-        zIndex: 10
-      }} />
+      {/* Footer Gradient Over - Solo en modo Fullscreen para no interferir con el diseño side */}
+      {!isSide && (
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '20vh',
+          background: 'linear-gradient(to top, var(--background), transparent)',
+          pointerEvents: 'none',
+          zIndex: 10
+        }} />
+      )}
     </motion.div>
   );
 };

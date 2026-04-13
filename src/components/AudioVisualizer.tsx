@@ -35,41 +35,26 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ analyser, isPl
       const centerY = canvas.height / 2;
       const radius = 135; // Un poco mayor que el radio del disco (130px)
 
-      // Dibujar resplandor sutil detrás
       const avg = dataArray.reduce((src, next) => src + next, 0) / bufferLength;
       const glowSize = 150 + avg * 0.5;
-
-      const gradient = ctx.createRadialGradient(centerX, centerY, radius, centerX, centerY, glowSize);
-      gradient.addColorStop(0, 'rgba(163, 166, 255, 0.2)');
-      gradient.addColorStop(1, 'rgba(83, 221, 252, 0)');
+      const dynamicColor = getComputedStyle(document.documentElement).getPropertyValue('--dynamic-color').trim() || '#a3a6ff';
       
+      ctx.save();
+      const gradient = ctx.createRadialGradient(centerX, centerY, radius, centerX, centerY, glowSize);
+      gradient.addColorStop(0, dynamicColor);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      
+      ctx.globalAlpha = 0.2; // Opacidad controlada
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.arc(centerX, centerY, glowSize, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
 
-      // Dibujar barras circulares (espectro)
-      const barCount = 60;
-      for (let i = 0; i < barCount; i++) {
-        const value = dataArray[i * 2]; // Tomar muestras
-        const angle = (i / barCount) * Math.PI * 2;
-        
-        const barHeight = (value / 255) * 40;
-        
-        const x1 = centerX + Math.cos(angle) * radius;
-        const y1 = centerY + Math.sin(angle) * radius;
-        const x2 = centerX + Math.cos(angle) * (radius + barHeight);
-        const y2 = centerY + Math.sin(angle) * (radius + barHeight);
 
-        ctx.strokeStyle = `rgba(83, 221, 252, ${0.4 + (value / 255) * 0.6})`;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-      }
+      // El aura ya se dibuja arriba. Hemos eliminado las barras del espectro por petición del usuario.
     };
+
 
     draw();
 

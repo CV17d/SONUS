@@ -5,7 +5,8 @@ import { Player } from './components/Player';
 import { Playlist } from './components/Playlist';
 import { Sidebar } from './components/Sidebar';
 import { EditPlaylistModal } from './components/EditPlaylistModal';
-import { Loader2, Menu } from 'lucide-react';
+import { EqualizerModal } from './components/EqualizerModal';
+import { Loader2, Menu, Maximize, Minimize } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { extractMetadata } from './logic/metadata';
 import { fetchCoverArt } from './logic/coverService';
@@ -45,6 +46,25 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isZenMode, setIsZenMode] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>((localStorage.getItem('sonus-theme') as 'light' | 'dark') || 'light');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isEqOpen, setIsEqOpen] = useState(false);
+  const [eqBands, setEqBands] = useState([0, 0, 0, 0, 0]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen().catch(err => console.error(err));
+    } else {
+      await document.exitFullscreen().catch(err => console.error(err));
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -276,6 +296,7 @@ function App() {
           onDelete={deletePlaylist}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          onOpenEq={() => setIsEqOpen(true)}
         />
       )}
 
@@ -300,24 +321,7 @@ function App() {
           <ThemeToggle theme={theme} toggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
         </div>
 
-        <header style={{ 
-          textAlign: 'center', 
-          marginBottom: '1rem',
-          opacity: viewMode === 'player' ? 1 : 0.2,
-          transition: 'opacity 0.5s'
-        }}>
-          <h1 style={{ 
-            fontSize: isMobile ? '2.5rem' : '3.5rem', 
-            fontWeight: 800, 
-            letterSpacing: '-3px',
-            background: 'var(--gradient-main)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            marginBottom: '0.25rem'
-          }}>
-            SONUS
-          </h1>
-        </header>
+
 
         <main style={{ 
           flex: 1,
@@ -328,41 +332,14 @@ function App() {
           position: 'relative'
         }}>
           <AnimatePresence mode="wait">
-            {viewMode === 'player' ? (
-              <motion.div 
-                key="player-view"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
-              >
-                <Player 
-                  songs={songs}
-                  currentIndex={currentIndex}
-                  onNext={handleNext}
-                  onPrev={handlePrev}
-                  isPlaying={isPlaying}
-                  setIsPlaying={setIsPlaying}
-                  repeatMode={repeatMode}
-                  onToggleRepeat={() => setRepeatMode(prev => 
-                    prev === 'none' ? 'all' : prev === 'all' ? 'one' : 'none'
-                  )}
-                  isShuffle={isShuffle}
-                  onToggleShuffle={() => setIsShuffle(!isShuffle)}
-                  onViewList={() => setViewMode('list')}
-                  isZenMode={isZenMode}
-                  onToggleZen={() => setIsZenMode(!isZenMode)}
-                />
-              </motion.div>
-            ) : (
+            {viewMode === 'list' && (
               <motion.div 
                 key="list-view"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+                style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingBottom: '100px' }}
               >
                 <Playlist 
                   songs={songs}
@@ -376,6 +353,26 @@ function App() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <Player 
+            songs={songs}
+            currentIndex={currentIndex}
+            onNext={handleNext}
+            onPrev={handlePrev}
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
+            repeatMode={repeatMode}
+            onToggleRepeat={() => setRepeatMode(prev => 
+              prev === 'none' ? 'all' : prev === 'all' ? 'one' : 'none'
+            )}
+            isShuffle={isShuffle}
+            onToggleShuffle={() => setIsShuffle(!isShuffle)}
+            onViewList={() => setViewMode(viewMode === 'player' ? 'list' : 'player')}
+            isZenMode={isZenMode}
+            onToggleZen={() => setIsZenMode(!isZenMode)}
+            eqBands={eqBands}
+            isMini={viewMode === 'list'}
+          />
         </main>
       </div>
 
@@ -386,6 +383,52 @@ function App() {
           onSave={updatePlaylist}
         />
       )}
+
+      <AnimatePresence>
+        {isEqOpen && (
+          <EqualizerModal 
+            eqBands={eqBands}
+            setEqBands={setEqBands}
+            onClose={() => setIsEqOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Botón Flotante para Pantalla Completa */}
+      <button 
+        onClick={toggleFullscreen}
+        style={{
+          position: 'fixed',
+          bottom: '1.5rem',
+          right: '1.5rem',
+          zIndex: 80,
+          background: 'var(--surface-container-high)',
+          border: 'none',
+          color: 'var(--on-surface-variant)',
+          padding: '0.8rem',
+          borderRadius: '1rem',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          opacity: 0.6,
+          transition: 'all 0.3s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.opacity = '1';
+          e.currentTarget.style.color = 'var(--primary)';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.opacity = '0.6';
+          e.currentTarget.style.color = 'var(--on-surface-variant)';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
+        title={isFullscreen ? "Salir de pantalla completa" : "Modo pantalla completa"}
+      >
+        {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
+      </button>
     </div>
   );
 }

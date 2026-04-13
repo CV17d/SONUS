@@ -129,16 +129,38 @@ p, span, div {
   background: radial-gradient(
     circle at center,
     var(--dynamic-color, var(--primary)) 0%,
-    transparent 50%
+    var(--secondary) 30%,
+    transparent 70%
   );
-  filter: blur(120px);
-  opacity: 0.15;
+  filter: blur(140px);
+  opacity: 0.3;
   transition: transform 0.1s ease-out, opacity 1.5s ease;
 }
 
 .dark-theme .dynamic-bg-blob {
-  opacity: 0.25;
+  opacity: 0.5;
 }
+
+/* Potent Aura Animations */
+@keyframes aura-pulse {
+  0% { transform: scale(1); opacity: 0.4; filter: blur(40px); }
+  50% { transform: scale(1.4); opacity: 0.2; filter: blur(60px); }
+  100% { transform: scale(1.8); opacity: 0; filter: blur(80px); }
+}
+
+.aura-layer {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--dynamic-color, var(--primary));
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.aura-potent {
+  animation: aura-pulse 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 
 /* Transiciones de Modo Zen */
 .sidebar-container, .navbar-container, header {
