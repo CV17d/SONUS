@@ -14,11 +14,11 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) 
     <div 
       onClick={toggleTheme}
       style={{
-        width: '64px',
-        height: '32px',
+        width: '80px',
+        height: '40px',
         borderRadius: '100px',
         background: isDark ? 'var(--surface-container-high)' : '#e2e8f0',
-        padding: '4px',
+        padding: '5px',
         display: 'flex',
         alignItems: 'center',
         cursor: 'pointer',
@@ -30,7 +30,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) 
     >
       <motion.div
         animate={{
-          x: isDark ? 32 : 0,
+          x: isDark ? 40 : 0,
           rotate: isDark ? 360 : 0
         }}
         transition={{
@@ -39,8 +39,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) 
           damping: 30
         }}
         style={{
-          width: '24px',
-          height: '24px',
+          width: '30px',
+          height: '30px',
           borderRadius: '50%',
           background: isDark ? 'var(--gradient-main)' : 'white',
           display: 'flex',
@@ -50,7 +50,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ theme, toggleTheme }) 
           color: isDark ? 'white' : '#64748b'
         }}
       >
-        {isDark ? <Moon size={14} fill="white" /> : <Sun size={14} fill="#f59e0b" color="#f59e0b" />}
+        {isDark ? <Moon size={18} fill="white" /> : <Sun size={18} fill="#f59e0b" color="#f59e0b" />}
       </motion.div>
     </div>
   );

@@ -41,7 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="glass-panel" 
       style={{ 
-        width: '300px', 
+        width: '360px', 
         height: isMobile ? '100vh' : 'calc(100vh - 4rem)', 
         display: 'flex', 
         flexDirection: 'column',
@@ -55,19 +55,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         left: 0
       }}
     >
-      <h1 style={{ 
-        fontSize: '2.5rem', 
-        fontWeight: 800, 
-        letterSpacing: '-3px',
-        background: 'var(--gradient-main)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        marginBottom: '1.5rem',
-        marginTop: '-0.5rem',
-        textAlign: 'center'
-      }}>
-        SONUS
-      </h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
+        <img src="/favicon.svg" alt="Sonus" style={{ width: '36px', height: '36px' }} />
+        <h1 style={{ 
+          fontSize: '2.5rem', 
+          fontWeight: 800, 
+          letterSpacing: '-3px',
+          background: 'var(--gradient-main)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          margin: 0
+        }}>
+          SONUS
+        </h1>
+      </div>
 
       <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
         <input 
@@ -82,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             borderRadius: 'var(--radius-md)',
             padding: '0.85rem 1.25rem 0.85rem 2.75rem',
             color: 'var(--on-surface)',
-            fontSize: '0.85rem',
+            fontSize: '1rem',
             fontWeight: 500,
             outline: 'none',
             fontFamily: 'var(--font-body)',
@@ -91,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className="search-input"
         />
         <Search 
-          size={16} 
+          size={18} 
           style={{ 
             position: 'absolute', 
             left: '0.85rem', 
@@ -105,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
         <h2 style={{ 
-          fontSize: '0.7rem', 
+          fontSize: '0.85rem', 
           fontWeight: 800, 
           letterSpacing: '0.2em', 
           color: 'var(--on-surface-variant)',
@@ -201,7 +202,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ 
-                fontSize: '1rem', 
+                fontSize: '1.1rem', 
                 fontWeight: activeId === playlist.id ? 800 : 500,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -222,7 +223,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   onEdit(playlist);
                 }}
               >
-                <Edit3 size={16} />
+                <Edit3 size={18} />
               </button>
 
               {playlists.length > 1 && (
@@ -234,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     if (window.confirm(`¿Borrar "${playlist.name}"?`)) onDelete(playlist.id);
                   }}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={18} />
                 </button>
               )}
             </div>
@@ -258,7 +259,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             color: 'var(--on-surface)',
             justifyContent: 'center',
             fontWeight: 700,
-            fontSize: '0.9rem',
+            fontSize: '1rem',
             letterSpacing: '1px',
             textTransform: 'uppercase'
           }}

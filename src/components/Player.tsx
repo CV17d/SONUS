@@ -287,7 +287,7 @@ export const Player: React.FC<PlayerProps> = ({
             layoutId="player-center-controls"
             style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: 1, justifyContent: 'center' }}
           >
-            <button className="btn-icon" onClick={onPrev}><SkipBack size={24} /></button>
+            <button className="btn-icon" onClick={onPrev}><SkipBack size={28} /></button>
             <button 
               onClick={togglePlay}
               className="btn-primary"
@@ -297,9 +297,9 @@ export const Player: React.FC<PlayerProps> = ({
                 transform: isPlaying ? 'scale(1.05)' : 'scale(1)'
               }}
             >
-              {isPlaying ? <Pause size={24} fill="white" /> : <Play size={24} fill="white" style={{ marginLeft: '4px' }} />}
+              {isPlaying ? <Pause size={28} fill="white" /> : <Play size={28} fill="white" style={{ marginLeft: '4px' }} />}
             </button>
-            <button className="btn-icon" onClick={onNext}><SkipForward size={24} /></button>
+            <button className="btn-icon" onClick={onNext}><SkipForward size={28} /></button>
           </motion.div>
 
           {/* Right: Extra Controls */}
@@ -310,7 +310,7 @@ export const Player: React.FC<PlayerProps> = ({
               style={{ color: isShuffle ? 'var(--secondary)' : 'var(--on-surface-variant)', opacity: isShuffle ? 1 : 0.4 }}
               title="Modo Aleatorio"
             >
-              <Shuffle size={18} />
+              <Shuffle size={22} />
             </button>
             
             <button 
@@ -319,11 +319,11 @@ export const Player: React.FC<PlayerProps> = ({
               style={{ color: repeatMode !== 'none' ? 'var(--primary)' : 'var(--on-surface-variant)', opacity: repeatMode !== 'none' ? 1 : 0.4 }}
               title="Modo Repetición"
             >
-              {repeatMode === 'one' ? <Repeat1 size={18} /> : <Repeat size={18} />}
+              {repeatMode === 'one' ? <Repeat1 size={22} /> : <Repeat size={22} />}
             </button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.7, margin: '0 0.5rem' }}>
-              <Volume2 size={22} />
+              <Volume2 size={24} />
               <input 
                 type="range" 
                 min="0" max="1" step="0.01" 
@@ -344,7 +344,7 @@ export const Player: React.FC<PlayerProps> = ({
                 style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: '1.25rem', marginLeft: '0.5rem' }}
                 title="Expandir Reproductor"
               >
-                <Maximize2 size={24} />
+                <Maximize2 size={28} />
               </button>
             )}
           </div>
