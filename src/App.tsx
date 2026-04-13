@@ -19,19 +19,19 @@ type ViewMode = 'player' | 'list';
 export type RepeatMode = 'none' | 'one' | 'all';
 
 function App() {
-  const { 
-    playlists, 
-    activePlaylistId, 
-    setActivePlaylistId, 
-    createPlaylist, 
-    updatePlaylist, 
+  const {
+    playlists,
+    activePlaylistId,
+    setActivePlaylistId,
+    createPlaylist,
+    updatePlaylist,
     deletePlaylist,
-    isLoadingManager 
+    isLoadingManager
   } = usePlaylistsManager();
 
-  const { 
-    songs, 
-    addAtEnd, 
+  const {
+    songs,
+    addAtEnd,
     removeSong,
     reorderSongs
   } = usePlaylist(activePlaylistId);
@@ -165,12 +165,12 @@ function App() {
         // Solo buscamos si no tenemos una carátula real o si es un blob genérico 
         // (music-metadata suele devolver blobs si los encuentra, pero si no hay, buscamos fuera)
         if (!song.coverBlob) {
-           const externalCover = await fetchCoverArt(song.artist, song.title);
-           if (externalCover) {
-             coverUrl = externalCover;
-             // Actualizar el objeto song localmente para esta sesión
-             song.coverUrl = externalCover;
-           }
+          const externalCover = await fetchCoverArt(song.artist, song.title);
+          if (externalCover) {
+            coverUrl = externalCover;
+            // Actualizar el objeto song localmente para esta sesión
+            song.coverUrl = externalCover;
+          }
         }
       }
 
@@ -195,12 +195,12 @@ function App() {
 
   const handleSelectSong = (index: number) => {
     setCurrentIndex(index);
-    setViewMode('player'); 
+    setViewMode('player');
   };
 
   const handleAddSong = async (file: File) => {
     const meta = await extractMetadata(file);
-    
+
     const newSong: Song = {
       id: Math.random().toString(36).substring(2, 9),
       title: meta.title || file.name.replace(/\.[^/.]+$/, ""),
@@ -238,13 +238,13 @@ function App() {
   }
 
   return (
-    <div 
-      className={isZenMode ? 'zen-active' : ''} 
+    <div
+      className={isZenMode ? 'zen-active' : ''}
       style={{ display: 'flex', minHeight: '100vh', position: 'relative', overflow: 'hidden' }}
     >
       {/* Botón Flotante para Sidebar (Mobile / Zen Toggle) */}
       {!isZenMode && isMobile && !isSidebarOpen && (
-        <button 
+        <button
           onClick={() => setIsSidebarOpen(true)}
           style={{
             position: 'fixed',
@@ -269,7 +269,7 @@ function App() {
 
       {/* FONDO DINÁMICO ULTRA-PREMIUM */}
       <div className="dynamic-bg-container">
-        <motion.div 
+        <motion.div
           className="dynamic-bg-blob"
           animate={{
             scale: isPlaying ? [1, 1.2, 1] : 1,
@@ -283,13 +283,13 @@ function App() {
       </div>
 
       {!isZenMode && (
-        <Sidebar 
+        <Sidebar
           playlists={playlists}
           activeId={activePlaylistId}
           onSelect={(id) => {
             setActivePlaylistId(id);
             setCurrentIndex(0);
-            setViewMode('list'); 
+            setViewMode('list');
           }}
           onCreate={handleCreatePlaylist}
           onEdit={(p) => setEditingPlaylist(p)}
@@ -297,25 +297,27 @@ function App() {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onOpenEq={() => setIsEqOpen(true)}
+          isMobile={isMobile}
         />
       )}
 
-      <div style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
         padding: isMobile ? '5rem 1rem 2rem' : '1.5rem 3rem',
         margin: '0',
         overflowY: 'auto',
         width: '100%',
         height: '100vh',
-        position: 'relative'
+        position: 'relative',
+        transition: 'padding 0.3s ease'
       }}>
         <div style={{
           position: 'absolute',
-          top: '1.5rem',
-          right: isMobile ? '1.5rem' : '3rem',
+          top: isMobile ? '1.25rem' : '1.5rem',
+          right: isMobile ? '1.25rem' : '3rem',
           zIndex: 100
         }}>
           <ThemeToggle theme={theme} toggleTheme={() => setTheme(theme === 'light' ? 'dark' : 'light')} />
@@ -323,7 +325,7 @@ function App() {
 
 
 
-        <main style={{ 
+        <main style={{
           flex: 1,
           width: '100%',
           display: 'flex',
@@ -333,7 +335,7 @@ function App() {
         }}>
           <AnimatePresence mode="wait">
             {viewMode === 'list' && (
-              <motion.div 
+              <motion.div
                 key="list-view"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -341,7 +343,7 @@ function App() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingBottom: '100px' }}
               >
-                <Playlist 
+                <Playlist
                   songs={songs}
                   currentIndex={currentIndex}
                   onSelectSong={handleSelectSong}
@@ -349,12 +351,13 @@ function App() {
                   onRemoveSong={handleRemove}
                   onReorder={reorderSongs}
                   onBack={() => setViewMode('player')}
+                  isMobile={isMobile}
                 />
               </motion.div>
             )}
           </AnimatePresence>
 
-          <Player 
+          <Player
             songs={songs}
             currentIndex={currentIndex}
             onNext={handleNext}
@@ -362,7 +365,7 @@ function App() {
             isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}
             repeatMode={repeatMode}
-            onToggleRepeat={() => setRepeatMode(prev => 
+            onToggleRepeat={() => setRepeatMode(prev =>
               prev === 'none' ? 'all' : prev === 'all' ? 'one' : 'none'
             )}
             isShuffle={isShuffle}
@@ -372,12 +375,13 @@ function App() {
             onToggleZen={() => setIsZenMode(!isZenMode)}
             eqBands={eqBands}
             isMini={viewMode === 'list'}
+            isMobile={isMobile}
           />
         </main>
       </div>
 
       {editingPlaylist && (
-        <EditPlaylistModal 
+        <EditPlaylistModal
           playlist={editingPlaylist}
           onClose={() => setEditingPlaylist(null)}
           onSave={updatePlaylist}
@@ -386,7 +390,7 @@ function App() {
 
       <AnimatePresence>
         {isEqOpen && (
-          <EqualizerModal 
+          <EqualizerModal
             eqBands={eqBands}
             setEqBands={setEqBands}
             onClose={() => setIsEqOpen(false)}
@@ -395,7 +399,7 @@ function App() {
       </AnimatePresence>
 
       {/* Botón Flotante para Pantalla Completa */}
-      <button 
+      <button
         onClick={toggleFullscreen}
         style={{
           position: 'fixed',

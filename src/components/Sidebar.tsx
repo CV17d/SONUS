@@ -13,37 +13,38 @@ interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
   onOpenEq: () => void;
+  isMobile?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  playlists, 
-  activeId, 
-  onSelect, 
-  onCreate, 
+export const Sidebar: React.FC<SidebarProps> = ({
+  playlists,
+  activeId,
+  onSelect,
+  onCreate,
   onEdit,
   onDelete,
   isOpen = true,
   onClose,
-  onOpenEq
+  onOpenEq,
+  isMobile
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
 
-  const filteredPlaylists = playlists.filter(p => 
+  const filteredPlaylists = playlists.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const sidebarContent = (
-    <motion.aside 
+    <motion.aside
       initial={isMobile ? { x: -300 } : { x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={isMobile ? { x: -300 } : { opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="glass-panel" 
-      style={{ 
-        width: '360px', 
-        height: isMobile ? '100vh' : 'calc(100vh - 4rem)', 
-        display: 'flex', 
+      className="glass-panel"
+      style={{
+        width: '360px',
+        height: isMobile ? '100vh' : 'calc(100vh - 4rem)',
+        display: 'flex',
         flexDirection: 'column',
         padding: '2rem 1.5rem',
         margin: isMobile ? 0 : '2rem 0 2rem 2rem',
@@ -57,9 +58,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
         <img src="/favicon.svg" alt="Sonus" style={{ width: '36px', height: '36px' }} />
-        <h1 style={{ 
-          fontSize: '2.5rem', 
-          fontWeight: 800, 
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: 800,
           letterSpacing: '-3px',
           background: 'var(--gradient-main)',
           WebkitBackgroundClip: 'text',
@@ -71,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
-        <input 
+        <input
           type="text"
           placeholder="Busca en tu música..."
           value={searchQuery}
@@ -91,24 +92,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }}
           className="search-input"
         />
-        <Search 
-          size={18} 
-          style={{ 
-            position: 'absolute', 
-            left: '0.85rem', 
-            top: '50%', 
+        <Search
+          size={18}
+          style={{
+            position: 'absolute',
+            left: '0.85rem',
+            top: '50%',
             transform: 'translateY(-50%)',
             color: 'var(--on-surface-variant)',
             opacity: 0.5
-          }} 
+          }}
         />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-        <h2 style={{ 
-          fontSize: '0.85rem', 
-          fontWeight: 800, 
-          letterSpacing: '0.2em', 
+        <h2 style={{
+          fontSize: '0.85rem',
+          fontWeight: 800,
+          letterSpacing: '0.2em',
           color: 'var(--on-surface-variant)',
           fontFamily: 'var(--font-display)',
           textTransform: 'uppercase',
@@ -117,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           BIBLIOTECA PERSONAL
         </h2>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button 
+          <button
             onClick={onCreate}
             className="btn-primary"
             style={{
@@ -130,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <Plus size={20} />
           </button>
-          
+
           {isMobile && onClose && (
             <button className="btn-icon" onClick={onClose} style={{ marginLeft: '8px' }}>
               <X size={24} />
@@ -139,16 +140,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      <div style={{ 
-        flex: 1, 
-        overflowY: 'auto', 
-        display: 'flex', 
-        flexDirection: 'column', 
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
         gap: '0.75rem',
         paddingRight: '0.25rem'
       }}>
         {filteredPlaylists.map((playlist) => (
-          <motion.div 
+          <motion.div
             key={playlist.id}
             whileHover={{ x: 5 }}
             onClick={() => {
@@ -169,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }}
           >
             {activeId === playlist.id && (
-              <motion.div 
+              <motion.div
                 layoutId="active-pill"
                 style={{
                   position: 'absolute',
@@ -183,10 +184,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               />
             )}
 
-            <div style={{ 
-              width: '56px', 
-              height: '56px', 
-              borderRadius: '1rem', 
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '1rem',
               overflow: 'hidden',
               background: 'var(--surface-bright)',
               flexShrink: 0
@@ -201,8 +202,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ 
-                fontSize: '1.1rem', 
+              <p style={{
+                fontSize: '1.1rem',
                 fontWeight: activeId === playlist.id ? 800 : 500,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
@@ -216,7 +217,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             <div style={{ display: 'flex', gap: '4px' }}>
-              <button 
+              <button
                 className="btn-icon"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -227,7 +228,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
 
               {playlists.length > 1 && (
-                <button 
+                <button
                   className="btn-icon"
                   style={{ color: 'var(--error)', opacity: 0.4 }}
                   onClick={(e) => {
@@ -245,7 +246,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Ecualizador Option at Bottom */}
       <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <button 
+        <button
           onClick={onOpenEq}
           className="btn-icon"
           style={{
@@ -276,7 +277,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isOpen && (
         <>
           {isMobile && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

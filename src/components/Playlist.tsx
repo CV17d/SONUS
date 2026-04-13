@@ -11,21 +11,23 @@ interface PlaylistProps {
   onRemoveSong: (id: string) => void;
   onReorder: (newOrder: Song[]) => void;
   onBack: () => void;
+  isMobile?: boolean;
 }
 
-export const Playlist: React.FC<PlaylistProps> = ({ 
-  songs, 
-  currentIndex, 
-  onSelectSong, 
-  onAddSong, 
+export const Playlist: React.FC<PlaylistProps> = ({
+  songs,
+  currentIndex,
+  onSelectSong,
+  onAddSong,
   onRemoveSong,
   onReorder,
-  onBack
+  onBack,
+  isMobile
 }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const filteredSongs = songs.filter(s => 
-    s.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredSongs = songs.filter(s =>
+    s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.artist.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -39,48 +41,48 @@ export const Playlist: React.FC<PlaylistProps> = ({
   };
 
   return (
-    <div 
-      className="glass-panel" 
-      style={{ 
-        padding: '3rem', 
+    <div
+      className="glass-panel"
+      style={{
+        padding: isMobile ? '1.5rem' : '3rem',
         width: '100%',
-        maxWidth: '650px', 
-        height: '80vh', 
-        display: 'flex', 
+        maxWidth: '650px',
+        height: isMobile ? '85vh' : '80vh',
+        display: 'flex',
         flexDirection: 'column',
         background: 'var(--surface-container-high)',
         boxShadow: '0 40px 80px rgba(0,0,0,0.15)',
         position: 'relative'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '3.5rem' }}>
-        <button 
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '1rem' : '1.5rem', marginBottom: isMobile ? '2rem' : '3.5rem' }}>
+        <button
           onClick={onBack}
           className="btn-icon"
-          style={{ 
-            background: 'var(--surface-container-low)', 
-            padding: '0.8rem', 
+          style={{
+            background: 'var(--surface-container-low)',
+            padding: '0.8rem',
             borderRadius: 'var(--radius-md)',
             color: 'var(--primary)'
           }}
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={isMobile ? 20 : 24} />
         </button>
-        
+
         <div>
-          <h2 style={{ 
-            fontSize: '1.75rem', 
-            fontWeight: 800, 
+          <h2 style={{
+            fontSize: '1.75rem',
+            fontWeight: 800,
             fontFamily: 'var(--font-display)',
             letterSpacing: 'var(--letter-spacing-display)'
           }}>
             Playlist
           </h2>
-          <p style={{ 
-            fontSize: '0.7rem', 
-            color: 'var(--on-surface-variant)', 
-            fontWeight: 800, 
-            opacity: 0.6, 
+          <p style={{
+            fontSize: '0.7rem',
+            color: 'var(--on-surface-variant)',
+            fontWeight: 800,
+            opacity: 0.6,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
             marginTop: '0.25rem'
@@ -88,10 +90,10 @@ export const Playlist: React.FC<PlaylistProps> = ({
             {songs.length} {songs.length === 1 ? 'Pista' : 'Pistas'} en tu colección
           </p>
         </div>
-        
-        <label 
-          className="btn-primary" 
-          style={{ 
+
+        <label
+          className="btn-primary"
+          style={{
             marginLeft: 'auto',
             width: '52px',
             height: '52px',
@@ -109,7 +111,7 @@ export const Playlist: React.FC<PlaylistProps> = ({
 
       {/* Buscador de Canciones */}
       <div style={{ position: 'relative', marginBottom: '2.5rem' }}>
-        <input 
+        <input
           type="text"
           placeholder="Busca una pista..."
           value={searchQuery}
@@ -129,30 +131,30 @@ export const Playlist: React.FC<PlaylistProps> = ({
           }}
           className="search-input"
         />
-        <Search 
-          size={20} 
-          style={{ 
-            position: 'absolute', 
-            left: '1.5rem', 
-            top: '50%', 
+        <Search
+          size={20}
+          style={{
+            position: 'absolute',
+            left: '1.5rem',
+            top: '50%',
             transform: 'translateY(-50%)',
             color: 'var(--on-surface-variant)',
             opacity: 0.4
-          }} 
+          }}
         />
       </div>
 
       {/* Lista Scrolleable con Zebra-layering y Reorder */}
-      <Reorder.Group 
-        axis="y" 
-        values={filteredSongs} 
+      <Reorder.Group
+        axis="y"
+        values={filteredSongs}
         onReorder={onReorder}
-        style={{ 
-          listStyle: 'none', 
-          padding: 0, 
+        style={{
+          listStyle: 'none',
+          padding: 0,
           margin: 0,
-          flex: 1, 
-          overflowY: 'auto', 
+          flex: 1,
+          overflowY: 'auto',
           paddingRight: '0.75rem',
           display: 'flex',
           flexDirection: 'column',
@@ -160,11 +162,11 @@ export const Playlist: React.FC<PlaylistProps> = ({
         }}
       >
         {filteredSongs.length === 0 ? (
-          <div style={{ 
-            height: '100%', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
+          <div style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             justifyContent: 'center',
             color: 'var(--on-surface-variant)',
             opacity: 0.3
@@ -177,8 +179,8 @@ export const Playlist: React.FC<PlaylistProps> = ({
             // Buscamos el índice original para mantener la funcionalidad de onSelectSong
             const originalIndex = songs.findIndex(s => s.id === song.id);
             return (
-              <Reorder.Item 
-                key={song.id} 
+              <Reorder.Item
+                key={song.id}
                 value={song}
                 className="list-item-zebra"
                 style={{
@@ -192,75 +194,75 @@ export const Playlist: React.FC<PlaylistProps> = ({
                   transition: 'background 0.2s, transform 0.2s',
                   background: currentIndex === originalIndex ? 'var(--surface-container-highest)' : ''
                 }}
-                whileDrag={{ 
-                  scale: 1.05, 
-                  boxShadow: '0 25px 50px rgba(0,0,0,0.15)', 
+                whileDrag={{
+                  scale: 1.05,
+                  boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
                   zIndex: 10,
-                  background: 'var(--surface-bright)' 
+                  background: 'var(--surface-bright)'
                 }}
               >
-                <div 
+                <div
                   onClick={() => onSelectSong(originalIndex)}
                   style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '1.5rem', minWidth: 0 }}
                 >
-                <div style={{ color: 'var(--on-surface-variant)', opacity: 0.2 }}>
-                  <GripVertical size={18} />
-                </div>
+                  <div style={{ color: 'var(--on-surface-variant)', opacity: 0.2 }}>
+                    <GripVertical size={18} />
+                  </div>
 
-                <div style={{ 
-                  width: '64px', 
-                  height: '64px', 
-                  borderRadius: 'var(--radius-md)', 
-                  background: 'var(--surface-container-highest)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  overflow: 'hidden'
-                }}>
-                  {song.coverUrl ? (
-                    <img src={song.coverUrl} alt={song.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <Music size={24} color="var(--on-surface-variant)" style={{ opacity: 0.4 }} />
-                  )}
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <h3 style={{ 
-                    fontSize: '1.1rem', 
-                    fontWeight: 700, 
-                    whiteSpace: 'nowrap', 
-                    overflow: 'hidden', 
-                    textOverflow: 'ellipsis',
-                    color: currentIndex === originalIndex ? 'white' : 'var(--on-surface)',
-                    fontFamily: 'var(--font-display)'
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: 'var(--radius-md)',
+                    background: 'var(--surface-container-highest)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    overflow: 'hidden'
                   }}>
-                    {song.title}
-                  </h3>
-                  <p style={{ 
-                    fontSize: '0.85rem', 
-                    color: 'var(--on-surface-variant)', 
-                    fontWeight: 600,
-                    opacity: 0.8
-                  }}>
-                    {song.artist}
-                  </p>
-                </div>
-              </div>
+                    {song.coverUrl ? (
+                      <img src={song.coverUrl} alt={song.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <Music size={24} color="var(--on-surface-variant)" style={{ opacity: 0.4 }} />
+                    )}
+                  </div>
 
-              <div style={{ display: 'flex', gap: '0.5rem', opacity: currentIndex === originalIndex ? 1 : 0.4 }}>
-                 <button 
-                  className="btn-icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemoveSong(song.id);
-                  }}
-                  style={{ padding: '0.6rem' }}
-                >
-                  <Trash2 size={20} color="var(--error)" />
-                </button>
-              </div>
-            </Reorder.Item>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 style={{
+                      fontSize: '1.1rem',
+                      fontWeight: 700,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      color: currentIndex === originalIndex ? 'white' : 'var(--on-surface)',
+                      fontFamily: 'var(--font-display)'
+                    }}>
+                      {song.title}
+                    </h3>
+                    <p style={{
+                      fontSize: '0.85rem',
+                      color: 'var(--on-surface-variant)',
+                      fontWeight: 600,
+                      opacity: 0.8
+                    }}>
+                      {song.artist}
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.5rem', opacity: currentIndex === originalIndex ? 1 : 0.4 }}>
+                  <button
+                    className="btn-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveSong(song.id);
+                    }}
+                    style={{ padding: '0.6rem' }}
+                  >
+                    <Trash2 size={20} color="var(--error)" />
+                  </button>
+                </div>
+              </Reorder.Item>
             );
           })
         )}
